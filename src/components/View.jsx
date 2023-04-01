@@ -3,7 +3,11 @@ import React from 'react'
 import { useEffect } from 'react'
 import { useState } from 'react'
 import axios from 'axios'
+import AddStudents from './AddStudents'
+
 const View = () => {
+    var[update,setUpdate]= useState(false)
+    var[selected,setSelected]= useState([])
     var[students,setStudents]= useState([])
     useEffect(()=>{
      axios.get("http://localhost:3005/students")
@@ -19,9 +23,13 @@ const View = () => {
         alert("Succesfully Deleted")
         window.location.reload(false)
       })
+      .catch(error=>console.log(error))
     }
-  return (
-  <TableContainer>
+    const updateValue=(value)=>{
+      setSelected(value)
+      setUpdate(true)
+    }
+    var finalJSX = <TableContainer>
     <Table>
         <TableHead>
             <TableRow>
@@ -40,13 +48,20 @@ const View = () => {
                 <Button  variant="contained" onClick={()=>deleteValue(value.id)}>Delete </Button> 
                
                 </TableCell>
-                <TableCell> <Button variant="contained" color='error' >Update</Button></TableCell>
+                <TableCell> <Button variant="contained" color='error' onClick={()=>updateValue(value)} >Update</Button></TableCell>
             </TableRow>
           })}
         </TableBody>
     </Table>
   </TableContainer>
-  )
+
+ if(update)
+  finalJSX=<AddStudents data={selected} method ="put" />
+  return (
+  
+  finalJSX )
+
+ 
 }
 
 export default View
